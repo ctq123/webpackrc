@@ -10,8 +10,9 @@
   "license": "ISC",
   "main": "dist/main.js",
   "scripts": {
-    "start": "webpack-dev-server --mode development --port 3001 --open",
-    "build": "webpack --mode production"
+    "start": "webpack-dev-server --mode development --port 3001",
+    "build:test": "webpack --mode production",
+    "build:prod": "webpack --mode production"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -51,6 +52,7 @@
     "less-loader": "4.1.0",
     "mini-css-extract-plugin": "0.4.5",
     "postcss-loader": "3.0.0",
+    "progress-bar-webpack-plugin": "^1.11.0",
     "react-router": "3.2.1",
     "style-loader": "0.23.1",
     "url-loader": "^1.1.2",

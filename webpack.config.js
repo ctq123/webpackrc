@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const ProgressBarWebpackPlugin = require('progress-bar-webpack-plugin')
 
 const htmlPlugin = new HtmlWebpackPlugin({
   template: path.join(__dirname, 'public/index.html'),
@@ -18,6 +19,13 @@ const copyPlugin = new CopyWebpackPlugin([
     from: path.join(__dirname, './assets'), to: 'assets/'
   }
 ])
+const progressPlugin = new ProgressBarWebpackPlugin({
+  format: 'building [:bar] :percent (:elapsed seconds)',
+  clear: false,
+  width: 30
+})
+
+const publishEnv = process.env.npm_lifecycle_event.replace('build:', '')
 
 module.exports = (env, argv) => {
   const devMode = argv.mode !== 'production'
@@ -80,12 +88,13 @@ module.exports = (env, argv) => {
         }]
       }]
     },
-    // devtool: 'source-map',
+    devtool: publishEnv != 'prod' ? 'source-map' : '',
     plugins: [
       htmlPlugin,
       cssPlugin,
       cleanPlugin,
-      copyPlugin      
+      copyPlugin,
+      progressPlugin      
     ],
     optimization: {
       splitChunks: {
@@ -108,6 +117,18 @@ module.exports = (env, argv) => {
       errors: true,
       errorDetails: true,
       warnings: true
+    },
+    devServer: {
+      open: true,
+      stats: {
+        assets: false,
+        entrypoints: false,
+        children: false,
+        modules: false,
+        errors: true,
+        errorDetails: true,
+        warnings: true
+      }
     }
   }
 }
