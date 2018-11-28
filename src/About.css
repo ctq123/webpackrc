@@ -1,3 +1,9 @@
 .item-link-con {
   color: #61dafb
 }
+
+.img-logo {
+  height: 50px;
+  width: 100%;
+  background: url('../assets/img/logo.svg') no-repeat;
+}

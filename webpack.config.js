@@ -2,6 +2,7 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const htmlPlugin = new HtmlWebpackPlugin({
   template: path.join(__dirname, 'public/index.html'),
@@ -12,6 +13,11 @@ const cssPlugin = new MiniCssExtractPlugin({
   chunkFilename: '[name].css'
 })
 const cleanPlugin = new CleanWebpackPlugin(['dist'])
+const copyPlugin = new CopyWebpackPlugin([
+  {
+    from: path.join(__dirname, './assets'), to: 'assets/'
+  }
+])
 
 module.exports = (env, argv) => {
   const devMode = argv.mode !== 'production'
@@ -64,15 +70,22 @@ module.exports = (env, argv) => {
           }
         }]
       }, {
-        test: /\.(png|jpg|gif|svg)$/,
-        use: ['file-loader']
+        test: /\.(png|jpeg|jpg|gif|svg)$/i,
+        use: [{
+          loader: 'url-loader',
+          options: {
+            name: '[name].[ext]',
+            limit: 10240
+          }
+        }]
       }]
     },
     // devtool: 'source-map',
     plugins: [
       htmlPlugin,
       cssPlugin,
-      cleanPlugin
+      cleanPlugin,
+      copyPlugin      
     ],
     optimization: {
       splitChunks: {
@@ -84,9 +97,6 @@ module.exports = (env, argv) => {
     },
     resolve: {
       extensions: ['.js', '.jsx', '.html', '.css', '.less']
-    },
-    devServer: {
-      port: 3001
     },
     performance: {
       hints: false

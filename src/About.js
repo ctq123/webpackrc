@@ -22,6 +22,13 @@ class About extends React.PureComponent {
           <Slider defaultValue={70} />
         </Form.Item>
         <Form.Item
+          label="logo"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 8 }}
+        >
+          <div className='img-logo' title='logo图片' />
+        </Form.Item>
+        <Form.Item
           style={{ marginTop: 48 }}
           wrapperCol={{ span: 8, offset: 8 }}
         >

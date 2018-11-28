@@ -52,6 +52,13 @@ class App extends React.PureComponent {
           <DatePicker />
         </Form.Item>
         <Form.Item
+          label="logo"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 8 }}
+        >
+          <img src='../assets/img/smart_notice.gif' alt='logo图片' />
+        </Form.Item>
+        <Form.Item
           style={{ marginTop: 48 }}
           wrapperCol={{ span: 8, offset: 8 }}
         >
