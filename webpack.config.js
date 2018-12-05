@@ -49,23 +49,41 @@ module.exports = (env, argv) => {
         use: {
           loader: 'babel-loader',
           options: {
-            "presets": ["env", "react"],
+            "presets": ["env", "react", "stage-0"],
             "plugins": ["transform-runtime", ["import", {"libraryName": "antd", "style": true}]] 
           }
         }
-      }, {
-        test: /\.css$/,
+      } , {
+        test: /\.(css|less)$/,
+        include: /src|public/,
         use: [
-          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-          'css-loader',
-          'postcss-loader'
+          {
+            loader: devMode ? 'style-loader' : MiniCssExtractPlugin.loader
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              localIdentName: '[name]-[local]-[hash:5]'
+            }
+          }, {
+            loader: 'less-loader',
+            options: {
+              modules: true,
+              localIdentName: '[name]-[local]-[hash:5]',
+              javascriptEnabled: true 
+            },
+          }, {
+            loader: 'postcss-loader'
+          }
         ],
       }, {
-        test: /\.less$/,
+        test: /\.(less|css)$/,
+        include: /node_modules/,
         use: [{
           loader: 'style-loader'
         }, {
-          loader: 'css-loader'
+          loader: 'css-loader',
         }, {
           loader: 'less-loader',
           options: {
