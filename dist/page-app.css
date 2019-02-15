@@ -1,12 +1,12 @@
-.App-App-5c73d {
+.App {
   text-align: center;
 }
-.App-App-logo-b0212 {
-  -webkit-animation: App-App-logo-spin-51233 infinite 20s linear;
-  animation: App-App-logo-spin-51233 infinite 20s linear;
+.App-logo {
+  -webkit-animation: App-logo-spin infinite 20s linear;
+  animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
 }
-.App-App-header-80cee {
+.App-header {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -16,10 +16,10 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
-.App-App-link-dff96 {
+.App-link {
   color: #61dafb;
 }
-@-webkit-keyframes App-App-logo-spin-51233 {
+@-webkit-keyframes App-logo-spin {
   from {
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
@@ -29,7 +29,7 @@
     transform: rotate(360deg);
   }
 }
-@keyframes App-App-logo-spin-51233 {
+@keyframes App-logo-spin {
   from {
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);

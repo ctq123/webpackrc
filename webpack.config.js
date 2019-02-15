@@ -1,9 +1,12 @@
 const path = require('path')
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ProgressBarWebpackPlugin = require('progress-bar-webpack-plugin')
+const GetRepoInfo = require('git-repo-info')
+const moment = require('moment')
 
 const htmlPlugin = new HtmlWebpackPlugin({
   template: path.join(__dirname, 'public/index.html'),
@@ -26,6 +29,16 @@ const progressPlugin = new ProgressBarWebpackPlugin({
 })
 
 const publishEnv = process.env.npm_lifecycle_event.replace('build:', '')
+const { branch } = GetRepoInfo()
+const RELEASE = `${publishEnv}__${branch.replace('/', '_')}__${moment().format('MMDDHHmm')}`
+
+const serverHost = 'http://localhost:8080'
+const apiPrex = ''
+
+const definePlugin = new webpack.DefinePlugin({
+  HOST: publishEnv === 'dev' ? JSON.stringify(serverHost) : JSON.stringify(apiPrex),
+  RELEASE: JSON.stringify(RELEASE),
+})
 
 module.exports = (env, argv) => {
   const devMode = argv.mode !== 'production'
@@ -64,7 +77,7 @@ module.exports = (env, argv) => {
             loader: 'css-loader',
             options: {
               modules: true,
-              localIdentName: '[name]-[local]-[hash:5]'
+              localIdentName: '[local]'
             }
           }, {
             loader: 'less-loader',
@@ -89,7 +102,6 @@ module.exports = (env, argv) => {
           options: {
             modifyVars: {
               'primary-color': '#1DA57A',
-              'primary-color': '#1DA57A',
               'border-radius-base': '2px',
             },
             javascriptEnabled: true 
@@ -112,7 +124,8 @@ module.exports = (env, argv) => {
       cssPlugin,
       cleanPlugin,
       copyPlugin,
-      progressPlugin      
+      progressPlugin,
+      definePlugin,  
     ],
     optimization: {
       splitChunks: {
