@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ProgressBarWebpackPlugin = require('progress-bar-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const GetRepoInfo = require('git-repo-info')
 const moment = require('moment')
 
@@ -13,8 +14,8 @@ const htmlPlugin = new HtmlWebpackPlugin({
   filename: './index.html'
 })
 const cssPlugin = new MiniCssExtractPlugin({
-  filename: '[name].css',
-  chunkFilename: '[name].css'
+  filename: '[name]-[chunkhash:8].css',
+  chunkFilename: '[name]-[chunkhash:8].css'
 })
 const cleanPlugin = new CleanWebpackPlugin(['dist'])
 const copyPlugin = new CopyWebpackPlugin([
@@ -37,23 +38,30 @@ const apiPrex = ''
 
 const definePlugin = new webpack.DefinePlugin({
   HOST: publishEnv === 'dev' ? JSON.stringify(serverHost) : JSON.stringify(apiPrex),
-  RELEASE: JSON.stringify(RELEASE),
+  RELEASE: JSON.stringify(RELEASE)
 })
+
+// const uglifyjsPlugin = new UglifyJsPlugin({
+//   test: /\.js($|\?)/i,
+//   exclude: /node_modules/,
+//   parallel: true,
+//   sourceMap: true
+// })
 
 module.exports = (env, argv) => {
   const devMode = argv.mode !== 'production'
   return {
     entry: {
       main: [
-        "babel-polyfill",
-        path.join(__dirname, './public/index.js'),
+        'babel-polyfill',
+        path.join(__dirname, './public/index.js')
       ],
       vendor: ['react', 'react-dom']
     },
     output: {
       path: path.join(__dirname, './dist/'),
-      filename: '[name].js',
-      chunkFilename: '[name].js'
+      filename: '[name]-[chunkhash:8].js',
+      chunkFilename: '[name]-[chunkhash:8].js'
     },
     module: {
       rules: [{
@@ -62,11 +70,11 @@ module.exports = (env, argv) => {
         use: {
           loader: 'babel-loader',
           options: {
-            "presets": ["env", "react", "stage-0"],
-            "plugins": ["transform-runtime", ["import", {"libraryName": "antd", "style": true}]] 
+            'presets': ['env', 'react', 'stage-0'],
+            'plugins': ['transform-runtime', ['import', { 'libraryName': 'antd', 'style': true }]]
           }
         }
-      } , {
+      }, {
         test: /\.(css|less)$/,
         include: /src|public/,
         use: [
@@ -84,27 +92,27 @@ module.exports = (env, argv) => {
             options: {
               modules: true,
               localIdentName: '[name]-[local]-[hash:5]',
-              javascriptEnabled: true 
-            },
+              javascriptEnabled: true
+            }
           }, {
             loader: 'postcss-loader'
           }
-        ],
+        ]
       }, {
         test: /\.(less|css)$/,
         include: /node_modules/,
         use: [{
           loader: 'style-loader'
         }, {
-          loader: 'css-loader',
+          loader: 'css-loader'
         }, {
           loader: 'less-loader',
           options: {
             modifyVars: {
               'primary-color': '#1DA57A',
-              'border-radius-base': '2px',
+              'border-radius-base': '2px'
             },
-            javascriptEnabled: true 
+            javascriptEnabled: true
           }
         }]
       }, {
@@ -118,14 +126,14 @@ module.exports = (env, argv) => {
         }]
       }]
     },
-    devtool: publishEnv != 'prod' ? 'source-map' : '',
+    devtool: publishEnv !== 'prod' ? 'source-map' : '',
     plugins: [
       htmlPlugin,
       cssPlugin,
       cleanPlugin,
       copyPlugin,
       progressPlugin,
-      definePlugin,  
+      definePlugin
     ],
     optimization: {
       splitChunks: {
@@ -133,7 +141,7 @@ module.exports = (env, argv) => {
         minSize: 30000, // 大于30K才会抽离到公共模块
         minChunks: Infinity,
         name: 'vendor'
-      },
+      }
     },
     resolve: {
       extensions: ['.js', '.jsx', '.html', '.css', '.less']
